@@ -25,6 +25,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,16 +36,14 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ProfileScreen() {
     Column(modifier = Modifier.fillMaxSize()) {
-        TopBar(name = "adasdfasdfasdfsdfsadfsdff")
+        TopBar(name = "deadpool")
         Spacer(modifier = Modifier.height(4.dp))
         ProfileSection()
     }
 }
 
 @Composable
-fun TopBar(
-    name: String,
-) {
+fun TopBar(name: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -64,22 +64,30 @@ fun TopBar(
             fontSize = 20.sp,
             maxLines = 1,
             modifier = Modifier
-                .padding(start = 34.dp, end = 28.dp)
-                .weight(1f)
+                .padding(start = 34.dp, end = 4.dp)
         )
+        Image(
+            painter = painterResource(id = R.drawable.ic),
+            contentDescription = "Back",
+            modifier = Modifier
+                .size(18.dp)
+        )
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .weight(1f))
         Icon(
             painter = painterResource(id = R.drawable.ic_bell),
             contentDescription = "Back",
             modifier = Modifier
                 .padding(end = 28.dp)
-                .size(20.dp)
+                .size(18.dp)
         )
         Icon(
             painter = painterResource(id = R.drawable.ic_dotmenu),
             contentDescription = "Back",
             modifier = Modifier
-                .padding(end = 22.dp)
-                .size(18.dp)
+                .padding(end = 22.dp, bottom = 2.dp)
+                .size(14.dp)
         )
     }
 }
@@ -91,24 +99,38 @@ fun ProfileSection() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
+                .padding(vertical = 20.dp)
         ) {
             RoundImage(
-                image = painterResource(id = R.drawable.philipp),
+                image = painterResource(id = R.drawable.dp),
                 modifier = Modifier
-                    .size(100.dp)
-                    .weight(3f)
+                    .padding(start = 30.dp)
+                    .size(90.dp)
+                    .weight(1f)
             )
             Spacer(modifier = Modifier.width(16.dp))
-            StatSection(modifier = Modifier.weight(3f))
+            StatSection(
+                modifier = Modifier
+                    .weight(3f)
+                    .padding(start = 16.dp, end = 10.dp)
+            )
         }
+        ProfileDescription(
+            displayName = "Deadpool",
+            description = "The official @Marvel's Deadpool account,\n" +
+                    "A.K.A., the Merc with a Mouth\n" +
+                    "Two fists, two swords, and a total bada\$\$.\n" +
+                    "Bea Arthur's #1 fan.\n",
+            url = "www.mintmobile.com",
+            followedBy = listOf("chrishemsworth", "robertdowneyjr"),
+            otherCount = 17
+        )
     }
 }
 
 @Composable
 fun RoundImage(
-    image: Painter,
-    modifier: Modifier = Modifier
+    image: Painter, modifier: Modifier = Modifier
 ) {
     Image(
         painter = image,
@@ -116,8 +138,7 @@ fun RoundImage(
         modifier = modifier
             .aspectRatio(1f, matchHeightConstraintsFirst = true)
             .border(
-                1.dp, Color.LightGray,
-                CircleShape
+                2.dp, Color.LightGray, CircleShape
             )
             .padding(3.dp)
             .clip(CircleShape)
@@ -128,11 +149,12 @@ fun RoundImage(
 fun StatSection(modifier: Modifier = Modifier) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround, modifier = modifier
+        horizontalArrangement = Arrangement.SpaceAround,
+        modifier = modifier
     ) {
-        ProfileStats(numberText = "234", text = "Post")
-        ProfileStats(numberText = "3452", text = "Followers")
-        ProfileStats(numberText = "3452", text = "Following")
+        ProfileStats(numberText = "23", text = "Post")
+        ProfileStats(numberText = "34M", text = "Followers")
+        ProfileStats(numberText = "452", text = "Following")
     }
 }
 
@@ -143,8 +165,60 @@ fun ProfileStats(numberText: String, text: String, modifier: Modifier = Modifier
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
     ) {
-        Text(text = numberText, fontWeight = FontWeight.Bold, fontSize = 20.sp)
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(text = text, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        Text(text = numberText, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text(text = text, fontWeight = FontWeight.Normal, fontSize = 14.sp)
+    }
+}
+
+
+@Composable
+fun ProfileDescription(
+    displayName: String, description: String, url: String, followedBy: List<String>, otherCount: Int
+) {
+    val letterSpacing = 0.5.sp
+    val lineHeight = 20.sp
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp)
+    ) {
+        Text(
+            text = displayName, letterSpacing = letterSpacing, lineHeight = lineHeight
+        )
+        Text(
+            text = description, letterSpacing = letterSpacing, lineHeight = lineHeight
+        )
+        Text(
+            text = url,
+            color = Color(0xff3d3d91),
+            letterSpacing = letterSpacing,
+            lineHeight = lineHeight
+        )
+        if (followedBy.isEmpty()) {
+            Text(
+                text = buildAnnotatedString {
+                    val bondStyle = SpanStyle(
+                        color = Color.Black, fontWeight = FontWeight.Bold
+                    )
+                    append("Followed by ")
+                    pushStyle(bondStyle)
+                    followedBy.forEachIndexed { index, name ->
+                        pushStyle(bondStyle)
+                        append(name)
+                        pop()
+                        if (index < followedBy.size - 1) {
+                            append(", ")
+                        }
+                    }
+                    if (otherCount > 2) {
+                        append(" and ")
+                        pushStyle(bondStyle)
+                        append("$otherCount others")
+                    }
+                },
+                letterSpacing = letterSpacing,
+                lineHeight = lineHeight
+            )
+        }
     }
 }
