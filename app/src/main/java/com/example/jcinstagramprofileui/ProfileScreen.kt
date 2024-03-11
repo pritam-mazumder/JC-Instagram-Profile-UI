@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -32,6 +33,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +46,26 @@ fun ProfileScreen() {
         Spacer(modifier = Modifier.height(4.dp))
         ProfileSection()
         Spacer(modifier = Modifier.height(12.dp))
-        ButtonSection(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 10.dp))
+        ButtonSection(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 10.dp)
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        HighlightSection(
+            highlight = listOf(
+                StoryHighlight(painterResource(id = R.drawable.a), "Coming🔥"),
+                StoryHighlight(painterResource(id = R.drawable.b), "Hugh Res"),
+                StoryHighlight(painterResource(id = R.drawable.c), "Moisturizer"),
+                StoryHighlight(painterResource(id = R.drawable.d), "Comic"),
+                StoryHighlight(painterResource(id = R.drawable.e), "No sh!t"),
+                StoryHighlight(painterResource(id = R.drawable.f), "So cheeky"),
+                StoryHighlight(painterResource(id = R.drawable.g), "Entertainment"),
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp)
+        )
     }
 }
 
@@ -284,6 +305,30 @@ fun ActionButton(
                 imageVector = icon,
                 contentDescription = null,
             )
+        }
+    }
+}
+
+@Composable
+fun HighlightSection(
+    modifier: Modifier = Modifier,
+    highlight: List<StoryHighlight>
+) {
+    LazyRow(modifier = modifier) {
+        items(highlight.size) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .padding(end = 15.dp)
+            ) {
+                RoundImage(image = highlight[it].image, modifier = Modifier.size(70.dp))
+                Text(
+                    text = highlight[it].text,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
     }
 }
