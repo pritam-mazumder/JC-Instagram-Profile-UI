@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,8 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -39,6 +43,8 @@ fun ProfileScreen() {
         TopBar(name = "deadpool")
         Spacer(modifier = Modifier.height(4.dp))
         ProfileSection()
+        Spacer(modifier = Modifier.height(12.dp))
+        ButtonSection(modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 10.dp))
     }
 }
 
@@ -63,18 +69,18 @@ fun TopBar(name: String) {
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             maxLines = 1,
-            modifier = Modifier
-                .padding(start = 34.dp, end = 4.dp)
+            modifier = Modifier.padding(start = 34.dp, end = 4.dp)
         )
         Image(
             painter = painterResource(id = R.drawable.ic),
             contentDescription = "Back",
-            modifier = Modifier
-                .size(18.dp)
+            modifier = Modifier.size(18.dp)
         )
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        )
         Icon(
             painter = painterResource(id = R.drawable.ic_bell),
             contentDescription = "Back",
@@ -99,7 +105,7 @@ fun ProfileSection() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp)
+                .padding(top = 20.dp)
         ) {
             RoundImage(
                 image = painterResource(id = R.drawable.dp),
@@ -117,13 +123,10 @@ fun ProfileSection() {
         }
         ProfileDescription(
             displayName = "Deadpool",
-            description = "The official @Marvel's Deadpool account,\n" +
-                    "A.K.A., the Merc with a Mouth\n" +
-                    "Two fists, two swords, and a total bada\$\$.\n" +
-                    "Bea Arthur's #1 fan.\n",
-            url = "www.mintmobile.com",
+            description = "The official @Marvel's Deadpool account,\n" + "A.K.A., the Merc with a Mouth\n" + "Two fists, two swords, and a total bada\$\$.\n" + "Bea Arthur's #1 fan.",
+            url = "🔗 www.mintmobile.com",
             followedBy = listOf("chrishemsworth", "robertdowneyjr"),
-            otherCount = 17
+            otherCount = 17,
         )
     }
 }
@@ -175,7 +178,7 @@ fun ProfileStats(numberText: String, text: String, modifier: Modifier = Modifier
 fun ProfileDescription(
     displayName: String, description: String, url: String, followedBy: List<String>, otherCount: Int
 ) {
-    val letterSpacing = 0.5.sp
+//    val letterSpacing = 0.0.sp
     val lineHeight = 20.sp
     Column(
         modifier = Modifier
@@ -183,22 +186,23 @@ fun ProfileDescription(
             .padding(horizontal = 20.dp)
     ) {
         Text(
-            text = displayName, letterSpacing = letterSpacing, lineHeight = lineHeight
+            text = displayName, /*letterSpacing = letterSpacing,*/
+            lineHeight = lineHeight, fontWeight = FontWeight.Bold, fontSize = 16.sp
         )
         Text(
-            text = description, letterSpacing = letterSpacing, lineHeight = lineHeight
+            text = description, /*letterSpacing = letterSpacing,*/
+            lineHeight = lineHeight, fontSize = 14.sp
         )
         Text(
-            text = url,
-            color = Color(0xff3d3d91),
-            letterSpacing = letterSpacing,
+            text = url, color = Color(0xFFC8E7F1),
+//            letterSpacing = letterSpacing,
             lineHeight = lineHeight
         )
-        if (followedBy.isEmpty()) {
+        if (followedBy.isNotEmpty()) {
             Text(
                 text = buildAnnotatedString {
                     val bondStyle = SpanStyle(
-                        color = Color.Black, fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold
                     )
                     append("Followed by ")
                     pushStyle(bondStyle)
@@ -216,8 +220,69 @@ fun ProfileDescription(
                         append("$otherCount others")
                     }
                 },
-                letterSpacing = letterSpacing,
-                lineHeight = lineHeight
+//                letterSpacing = letterSpacing,
+                lineHeight = lineHeight, fontSize = 14.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun ButtonSection(
+    modifier: Modifier = Modifier
+) {
+    val minWeight = 104.dp
+    val height = 30.dp
+    Row(
+        horizontalArrangement = Arrangement.SpaceAround, modifier = modifier
+    ) {
+        ActionButton(
+            text = "Following",
+            icon = Icons.Default.KeyboardArrowDown,
+            modifier = Modifier
+                .defaultMinSize(minWeight)
+                .height(height)
+        )
+        ActionButton(
+            text = "Message",
+            modifier = Modifier
+                .defaultMinSize(minWeight)
+                .height(height)
+        )
+        ActionButton(
+            text = "Email",
+            modifier = Modifier
+                .defaultMinSize(minWeight)
+                .height(height)
+        )
+        ActionButton(
+            icon = Icons.Default.KeyboardArrowDown,
+            modifier = Modifier
+                .height(height)
+        )
+    }
+}
+
+@Composable
+fun ActionButton(
+    modifier: Modifier = Modifier, text: String? = null, icon: ImageVector? = null
+) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .border(1.dp, Color.LightGray, RoundedCornerShape(5.dp))
+            .padding(6.dp)
+    ) {
+        if (text != null) {
+            Text(
+                text = text, fontWeight = FontWeight.SemiBold, fontSize = 12.sp
+            )
+        }
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
             )
         }
     }
